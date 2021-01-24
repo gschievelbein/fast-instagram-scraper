@@ -39,7 +39,8 @@ this_cursor = ""
 
 # Instagram hashes
 location_hash = "ac38b90f0f3981c42092016a37c59bf7"  # might change in the future
-hashtag_hash = "ded47faa9a1aaded10161a2ff32abb6b"  # borrowed from https://github.com/arc298/instagram-scraper/blob/master/instagram_scraper/constants.py
+hashtag_hash = "ded47faa9a1aaded10161a2ff32abb6b"
+# borrowed from https://github.com/arc298/instagram-scraper/blob/master/instagram_scraper/constants.py
 
 
 # help function
@@ -50,8 +51,8 @@ def ilink(cursor=""):
             object_id_or_string) + '","first":50,"after":"' + cursor + '"}'
         return instalink
     elif location_or_hashtag == "hashtag":
-        instalink = 'https://instagram.com/graphql/query/?query_hash=' + hashtag_hash + '&variables={"tag_name":"' + str(
-            object_id_or_string) + '","first":50,"after":"' + cursor + '"}'
+        instalink = 'https://instagram.com/graphql/query/?query_hash=' + hashtag_hash + '&variables={"tag_name":"' + \
+                    str(object_id_or_string) + '","first":50,"after":"' + cursor + '"}'
         return instalink
     else:
         raise RuntimeError('location_or_hashtag variable must be location or hashtag')
@@ -262,7 +263,7 @@ def torsession():
                     print("Maximum number of posts scraped:{}".format(len(post_list)))
                     return "no_more_page"
 
-                if pf.min()['taken_at_timestamp'] < args.since_timestamp:
+                if pf.min()['taken_at_timestamp'] < since_timestamp:
                     print("Reached timestamp limit")
                     return "no_more_page"
 
@@ -270,7 +271,7 @@ def torsession():
                 if not edge_to_media["page_info"]["has_next_page"]:
                     if len(post_list) < max_posts:
                         print("Maybe you scraped too fast. Try setting a higher wait_between_requests.")
-                        return "no_more_page"
+                        return "no:_more_page"
                     else:
                         return "no_more_page"
 
@@ -306,7 +307,9 @@ Fast Instagram Scraper v1.2.2 https://github.com/do-me/fast-instagram-scraper
 
 # Required positional arguments
 parser.add_argument('object_id_or_string', type=str,
-                    help='Location id or hashtag like 12345678 or truckfonalddump. If --list, enter the item list here comma separated like loveyourlife,justdoit,truckfonalddump')
+                    help='Location id or hashtag like 12345678 or truckfonalddump. '
+                         'If --list, enter the item list here comma separated like '
+                         'loveyourlife,justdoit,truckfonalddump')
 parser.add_argument('location_or_hashtag', type=str, help='Must be location or hashtag')
 
 # Optional arguments
@@ -318,21 +321,28 @@ parser.add_argument('--max_tor_renew', type=int, help='Max number of new tor ses
 parser.add_argument('--run_number', type=str, help='Additional file name part like "_v2" for "1234567_v2.csv"',
                     default="")
 parser.add_argument('--location_or_hashtag_list', type=str,
-                    help='For heterogenous hashtag/location list scraping only: provide another list with "hashtag","location",...',
+                    help='For heterogenous hashtag/location list scraping only: '
+                         'provide another list with "hashtag","location",...',
                     default="")
 parser.add_argument('--tor_timeout', type=int,
                     help='Set tor timeout when tor session gets blocked for some reason (default 600 seconds)',
                     default=600)
 parser.add_argument('--user_agent', type=str, help='Change user agent if needed',
-                    default="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36")
+                    default="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                            "Chrome/86.0.4240.198 Safari/537.36")
 parser.add_argument('--threads', type=int,
-                    help='Change the number of threads. Each thread has a different tor end node when scraping for list.',
+                    help='Change the number of threads. '
+                         'Each thread has a different tor end node when scraping for list.',
                     default=1)
 parser.add_argument('--save_as', type=str,
-                    help='"csv" or "json". Modified csv is default, takes much less space (~1kb/post) with removed useless columns (can be defined under delete_keys() function). "csv" will create concatenated files whereas "json" will save original jsons of ~50 to ~150 posts each at 10kb/post.',
+                    help='"csv" or "json". Modified csv is default, takes much less space (~1kb/post) with removed '
+                         'useless columns (can be defined under delete_keys() function). '
+                         '"csv" will create concatenated files whereas "json" will save original jsons of '
+                         '~50 to ~150 posts each at 10kb/post.',
                     default="csv")
 parser.add_argument('--encoding', type=str,
-                    help='"utf-8" is default and recommended as there are plenty of non-ascii characters on Instagram. Ascii only works for json but not for csv.',
+                    help='"utf-8" is default and recommended as there are plenty of non-ascii characters on Instagram.'
+                         ' Ascii only works for json but not for csv.',
                     default="utf-8")
 parser.add_argument('--media_wait_between_requests', type=int, help='Waiting time between media requests', default=300)
 
@@ -340,7 +350,7 @@ parser.add_argument('--media_wait_between_requests', type=int, help='Waiting tim
 parser.add_argument('--list', action='store_true', help='Scrape for list')
 parser.add_argument('--last_cursor', action='store_true', help='Continue from last cursor')
 parser.add_argument('--save_media', action='store_true', help='Save media (currently only images)')
-parser.add_argument('--since_timestamp', type=int, help='Limit scraping until it reaches the timestampm', default=0)
+parser.add_argument('--since_timestamp', type=int, help='Limit scraping until it reaches the timestamp', default=0)
 
 args = parser.parse_args()
 
@@ -366,6 +376,7 @@ if __name__ == "__main__":
     out_encoding = args.encoding
     save_media = args.save_media
     media_wait_between_requests = args.media_wait_between_requests
+    since_timestamp = args.since_timestamp
 
     # Set user agent, i.e. from https://techblog.willshouse.com/2012/01/03/most-common-user-agents/
     headers = {}
@@ -389,9 +400,12 @@ if __name__ == "__main__":
                 print(one_obj)
                 time.sleep(1)
 
-                cli_line = 'python fast-instagram-scraper.py "{}" {} --max_posts {} --max_requests {} --wait_between_requests {} --max_tor_renew {} --tor_timeout {} --user_agent "{}"'.format(
-                    one_obj, location_or_hashtag, max_posts, max_requests, wait_between_requests, max_tor_renew,
-                    tor_timeout, user_agent)
+                cli_line = 'python fast-instagram-scraper.py "{}" {} --max_posts {} --since_timestamp {} ' \
+                           '--max_requests {} --wait_between_requests {} --max_tor_renew {} ' \
+                           '--tor_timeout {} --user_agent "{}"'.format(one_obj, location_or_hashtag, max_posts,
+                                                                       since_timestamp, max_requests,
+                                                                       wait_between_requests, max_tor_renew,
+                                                                       tor_timeout, user_agent)
 
                 if args.last_cursor:
                     cli_line += ' --last_cursor'
@@ -452,7 +466,7 @@ if __name__ == "__main__":
         # scraping for heterogenous values (locatoin and hashtags) use as below
         # scrape_items_list = ["12345678","justdoit"]
         # location_or_hashtag_list = ["location","hashtag"]
-        # ----------------------------------------------------------------------------------------------------------------------
+        # --------------------------------------------------------------------------------------------------------------
         # main loop for scrape_items_list
         for index, element in enumerate(tqdm(scrape_items_list)):
             object_id_or_string = element
@@ -464,8 +478,8 @@ if __name__ == "__main__":
                     location_or_hashtag = location_or_hashtag_list[index]
                 if len(location_or_hashtag_list) != len(scrape_items_list) and index == 0:
                     print(
-                        'location_or_hashtag_list must have same length as scrape_items_list\nScraping {} for every item as defined globally.'.format(
-                            location_or_hashtag))
+                        'location_or_hashtag_list must have same length as scrape_items_list'
+                        '\nScraping {} for every item as defined globally.'.format(location_or_hashtag))
                     ### end: only relevant for heterogenous values
 
             print('#{}. Mining for {}:{}'.format(index, location_or_hashtag, object_id_or_string))
