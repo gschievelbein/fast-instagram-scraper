@@ -1,3 +1,4 @@
+#!/bin/bash
 for F in $(cat ./location_ids.txt) ; do
   echo Mining $F
   path="./data/$F/"
