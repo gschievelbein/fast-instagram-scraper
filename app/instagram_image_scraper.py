@@ -34,7 +34,7 @@ def tor_img_download_loop(i_img_dict, out_dir, headers):
         with TorRequests() as tor_requests:
             with tor_requests.get_session() as sess:
                 print("Image download tor circuit built.")
-                for i, (k, v) in tqdm(enumerate(i_img_dict.items())):
+                for k, v in tqdm((i_img_dict.items())):
                     download_img(sess, k, v, out_dir, headers)
     else:
         print('No new images do download')
