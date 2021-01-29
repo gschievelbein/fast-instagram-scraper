@@ -82,7 +82,7 @@ def main():
         try:
             download_images(url_dict, out_dir, headers, args.request_wait)
             print('Finished :)')
-        except:
+        except FunctionTimedOut:
             print("Failed to download all images ):")
     else:
         print('Nothing to do (dataframe is empty o.O)')
