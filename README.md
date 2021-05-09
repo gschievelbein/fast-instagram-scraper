@@ -1,3 +1,5 @@
+This fork adds the option to crawl all posts up to a certain date and a separate script to download images from the generated csv files
+
 # Fast Instagram Scraper
 v2.0.0 (beta) - licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1) 
 
